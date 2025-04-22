@@ -1,0 +1,28 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'us-docker.pkg.dev/gcp-5ann15-nonprod-poc/hello-world-app-repo/cicd-github', '.']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'us-docker.pkg.dev/gcp-5ann15-nonprod-poc/hello-world-app-repo/cicd-github']
+
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      [
+        'run',
+        'deploy',
+        'cicd-github',
+        '--image',
+        'us-docker.pkg.dev/gcp-5ann15-nonprod-poc/hello-world-app-repo/cicd-github',
+        '--platform',
+        'managed',
+        '--region',
+        'us-central1',
+        '--allow-unauthenticated'
+      ]
+
+images:
+  - 'us-docker.pkg.dev/gcp-5ann15-nonprod-poc/hello-world-app-repo/cicd-github'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
